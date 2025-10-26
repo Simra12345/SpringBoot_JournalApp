@@ -34,7 +34,6 @@ public class JournalController {
 
     @PostMapping
     public void addJournal(@RequestBody Journal entry) {
-        entry.setDate(LocalDateTime.now());
         journalService.addJournal(entry);
     }
 
@@ -43,7 +42,6 @@ public class JournalController {
         journalService.getJournalById(id).map(existingEntry -> {
             existingEntry.setTitle(updatedEntry.getTitle() != null && !updatedEntry.getTitle().isEmpty() ? updatedEntry.getTitle() : existingEntry.getTitle());
             existingEntry.setContent(updatedEntry.getContent() != null && !updatedEntry.getContent().isEmpty() ? updatedEntry.getContent() : existingEntry.getContent());
-            existingEntry.setDate(LocalDateTime.now());
             journalService.addJournal(existingEntry);
             return true;
         });
