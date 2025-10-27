@@ -2,6 +2,7 @@ package com.simran.journalApp.services;
 
 
 import com.simran.journalApp.entity.Journal;
+import com.simran.journalApp.entity.User;
 import com.simran.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class JournalService {
         repository.deleteById(id);
     }
 
-    public void saveEntry(Journal journal) {
+    public void saveEntry(Journal journal, User user) {
         journalEntryRepository.save(journal);
     }
 }

@@ -46,7 +46,7 @@ public class JournalController {
     public ResponseEntity<Journal> createEntry(@RequestBody Journal myEntry, @PathVariable String userName){
         try {
             User user = userService.findByUserName(userName);
-            journalService.saveEntry(myEntry);
+            journalService.saveEntry(myEntry, user);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
