@@ -46,21 +46,21 @@ public class JournalController {
     public ResponseEntity<Journal> createEntry(@RequestBody Journal myEntry, @PathVariable String userName){
         try {
             User user = userService.findByUserName(userName);
-            journalService.saveEntry(myEntry, user);
+            journalService.saveEntry(myEntry, userName);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("id/{id}")
-    public void updateJournal(@PathVariable ObjectId id, @RequestBody Journal updatedEntry) {
-        journalService.getJournalById(id).map(existingEntry -> {
-            existingEntry.setTitle(updatedEntry.getTitle() != null && !updatedEntry.getTitle().isEmpty() ? updatedEntry.getTitle() : existingEntry.getTitle());
-            existingEntry.setContent(updatedEntry.getContent() != null && !updatedEntry.getContent().isEmpty() ? updatedEntry.getContent() : existingEntry.getContent());
-            journalService.addJournal(existingEntry);
-            return true;
-        });
+   // @PutMapping("id/{id}")
+   // public void updateJournal(@PathVariable ObjectId id, @RequestBody Journal updatedEntry) {
+        //journalService.getJournalById(id).map(existingEntry -> {
+         //   existingEntry.setTitle(updatedEntry.getTitle() != null && !updatedEntry.getTitle().isEmpty() ? updatedEntry.getTitle() : existingEntry.getTitle());
+          //  existingEntry.setContent(updatedEntry.getContent() != null && !updatedEntry.getContent().isEmpty() ? updatedEntry.getContent() : existingEntry.getContent());
+         //   journalService.addJournal(existingEntry);
+          //  return true;
+       // });
     }
 
-}
+

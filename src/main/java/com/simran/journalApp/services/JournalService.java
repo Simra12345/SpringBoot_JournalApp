@@ -2,11 +2,11 @@ package com.simran.journalApp.services;
 
 
 import com.simran.journalApp.entity.Journal;
-import com.simran.journalApp.entity.User;
 import com.simran.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.simran.journalApp.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,9 +20,15 @@ public class JournalService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
-    public void addJournal(Journal entry) {
-        entry.setDate(LocalDateTime.now());
-        repository.save(entry);
+    @Autowired
+    private  UserService userService;
+
+    public void saveEntry(Journal journal, String userName) {
+        User user =userService.findByUserName(userName);
+        journal.setDate(LocalDateTime.now());
+        Journal saved = journalEntryRepository.save(journal);
+        user.getJournalEntries().add(saved);
+        userService.saveEntry(user);
     }
 
     public List<Journal> getJournals() {
@@ -37,7 +43,7 @@ public class JournalService {
         repository.deleteById(id);
     }
 
-    public void saveEntry(Journal journal, User user) {
-        journalEntryRepository.save(journal);
+   // public void saveEntry(Journal journal, String userName) {
+       // journalEntryRepository.save(journal);
     }
-}
+
