@@ -1,9 +1,14 @@
 package com.simran.journalApp.controller;
 
 import com.simran.journalApp.entity.Journal;
+import com.simran.journalApp.entity.User;
+import com.simran.journalApp.repository.JournalEntryRepository;
 import com.simran.journalApp.services.JournalService;
+import com.simran.journalApp.services.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -16,15 +21,20 @@ public class JournalController {
     @Autowired
     private JournalService journalService;
 
+    @Autowired
+    private UserService userService;
 
-    @GetMapping
-    public List<Journal> getAllEntries() {
-        return journalService.getJournals();
-    }
 
-    @GetMapping("id/{id}")
-    public Journal getJournalById(@PathVariable ObjectId id) {
-        return journalService.getJournalById(id).orElse(null);
+
+    @GetMapping("/{userName}")
+    public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String userName) {
+        User user = userService.findByUserName(userName);
+        List<Journal> all = user.getJournalEntries();
+
+        if (all != null && !all.isEmpty()) {
+            return new ResponseEntity<>(all, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("id/{id}")
@@ -32,9 +42,15 @@ public class JournalController {
         journalService.removeJournalById(id);
     }
 
-    @PostMapping
-    public void addJournal(@RequestBody Journal entry) {
-        journalService.addJournal(entry);
+    @PostMapping("{userName}")
+    public ResponseEntity<Journal> createEntry(@RequestBody Journal myEntry, @PathVariable String userName){
+        try {
+            User user = userService.findByUserName(userName);
+            journalService.saveEntry(myEntry);
+            return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("id/{id}")

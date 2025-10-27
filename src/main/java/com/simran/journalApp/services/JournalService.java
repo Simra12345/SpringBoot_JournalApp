@@ -2,6 +2,7 @@ package com.simran.journalApp.services;
 
 
 import com.simran.journalApp.entity.Journal;
+import com.simran.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,8 @@ public class JournalService {
 
     @Autowired
     private com.simran.journalApp.repository.JournalEntryRepository repository;
+    @Autowired
+    private JournalEntryRepository journalEntryRepository;
 
     public void addJournal(Journal entry) {
         entry.setDate(LocalDateTime.now());
@@ -31,5 +34,9 @@ public class JournalService {
 
     public void removeJournalById(ObjectId id) {
         repository.deleteById(id);
+    }
+
+    public void saveEntry(Journal journal) {
+        journalEntryRepository.save(journal);
     }
 }
