@@ -1,6 +1,5 @@
 package com.simran.journalApp.entity;
 
-import com.simran.journalApp.repository.JournalEntryRepository;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -12,17 +11,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document
+@Document(collection = "users")
 @Data
-public class User  {
+public class User {
 
     @Id
     private ObjectId id;
+
     @Indexed(unique = true)
     @NonNull
     private String userName;
+
     @NonNull
     private String password;
+
     @DBRef
-    private List<JournalEntryRepository> journalEntries = new ArrayList<>();
+    private List<Journal> journalEntries = new ArrayList<>();
 }
+
