@@ -1,4 +1,4 @@
-package com.simran.journalApp.entity;
+package com.simran.journalApp.entities;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -14,18 +14,15 @@ import java.util.List;
 @Document(collection = "users")
 @Data
 public class User {
-
     @Id
     private ObjectId id;
-
     @Indexed(unique = true)
     @NonNull
-    private String userName;
-
+    private String username;
+    @NonNull
+    private String name;
     @NonNull
     private String password;
-
     @DBRef
-    private List<Journal> journalEntries = new ArrayList<>();
+    private List<Journal> journals = new ArrayList<>();
 }
-

@@ -1,45 +1,60 @@
 package com.simran.journalApp.controller;
 
-import com.simran.journalApp.entity.User;
-import com.simran.journalApp.services.UserService;
+import com.simran.journalApp.entities.User;
+import com.simran.journalApp.service.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-
     @GetMapping
-    public List<User> getAllUser() {
-        return userService.getAll();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        if (users == null || users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("id/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable ObjectId id) {
+        Optional<User> journal = userService.getUserById(id);
+        return journal.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("id/{id}")
+    public ResponseEntity<?> removeJournalById(@PathVariable ObjectId id) {
+        userService.removeUserById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        userService.saveEntry(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public void addUser(@RequestBody User user) {
+        userService.addUser(user);
     }
-
 
     @PutMapping("/{username}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String username) {
-        User userInDb = userService.findByUserName(username);
-        if (userInDb != null) {
-            userInDb.setUserName(user.getUserName());
-            userInDb.setPassword(user.getPassword());
-            userService.saveEntry(userInDb);
-            return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody User updatedUser) {
+        User existingUser = userService.getUserByUsername(username);
+        if (existingUser != null) {
+            existingUser.setUsername(!updatedUser.getUsername().isEmpty() ? updatedUser.getUsername() : existingUser.getUsername());
+            existingUser.setName(!updatedUser.getName().isEmpty() ? updatedUser.getName() : existingUser.getName());
+            existingUser.setPassword(!updatedUser.getPassword().isEmpty() ? updatedUser.getPassword() : existingUser.getPassword());
+            userService.addUser(existingUser);
+            return new ResponseEntity<>(existingUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
 }
-
