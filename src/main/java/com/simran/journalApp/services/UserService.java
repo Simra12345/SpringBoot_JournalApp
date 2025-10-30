@@ -4,12 +4,10 @@ import com.simran.journalApp.entity.User;
 import com.simran.journalApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
-import com.simran.journalApp.entity.Journal;
-import com.simran.journalApp.repository.JournalEntryRepository;
 
 @Component
 public class UserService {
@@ -19,8 +17,8 @@ public class UserService {
 
 
 
-    public User saveEntry(User user) {
-        return userRepository.save(user);
+    public void saveEntry(User user) {
+        userRepository.save(user);
     }
 
     public List<User> getAll() {
@@ -38,14 +36,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public void deleteUser(String userName) {
-        userRepository.deleteByUserName(userName);
-    }
-
-
 
     public User findByUserName(String userName) {
         return userRepository.findByUserName(userName);
+
+    }
+
+    public void deleteUser(String userName) {
+        userRepository.deleteByUserName(userName);
     }
 
 }
