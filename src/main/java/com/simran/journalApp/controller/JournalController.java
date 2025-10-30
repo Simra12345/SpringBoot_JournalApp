@@ -24,6 +24,12 @@ public class JournalController {
     @Autowired
     private UserService userService;
 
+    @GetMapping
+    public ResponseEntity<?> getAllJournals() {
+        List<Journal> all = journalService.getAll();
+        return new ResponseEntity<>(all, HttpStatus.OK);
+    }
+
 
 
     @GetMapping("/{userName}")
@@ -36,12 +42,19 @@ public class JournalController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    @DeleteMapping("id/{userName}{id}")
-    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId id, @PathVariable String userName) {
-        journalService.deleteById(id, userName);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/{userName}/{id}")
+    public ResponseEntity<?> deleteJournalEntryById(
+            @PathVariable String userName,
+            @PathVariable ObjectId id
+    ) {
+        try {
+            journalService.deleteById(id, userName);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting journal entry: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     @PostMapping("{userName}")
     public ResponseEntity<Journal> createEntry(@RequestBody Journal myEntry, @PathVariable String userName){

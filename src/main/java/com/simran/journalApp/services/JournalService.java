@@ -34,6 +34,10 @@ public class JournalService {
     public List<Journal> getJournals() {
         return repository.findAll();
     }
+    public List<Journal> getAll() {
+        return journalEntryRepository.findAll();
+    }
+
 
     public Optional<Journal> getJournalById(ObjectId id) {
         return repository.findById(id);
