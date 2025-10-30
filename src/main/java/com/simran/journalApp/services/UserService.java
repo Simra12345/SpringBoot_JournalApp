@@ -3,6 +3,7 @@ package com.simran.journalApp.services;
 import com.simran.journalApp.entity.User;
 import com.simran.journalApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 
@@ -44,6 +47,12 @@ public class UserService {
 
     public void deleteUser(String userName) {
         userRepository.deleteByUserName(userName);
+    }
+
+    public void saveNewUser(User user) {
+        // Encode the password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
 
 }
