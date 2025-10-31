@@ -50,9 +50,15 @@ public class UserService {
     }
 
     public void saveNewUser(User user) {
-        // Encode the password before saving
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+      if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(List.of("USER"));
+        }
+
         userRepository.save(user);
     }
+
 
 }

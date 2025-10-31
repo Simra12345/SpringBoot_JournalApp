@@ -5,6 +5,8 @@ import com.simran.journalApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,16 +25,16 @@ public class UserController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        userService.saveEntry(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
 
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
-        User userInDb = userService.findByUserName(user.getUserName());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUsername = authentication.getName();
+
+        User userInDb = userService.findByUserName(loggedInUsername);
+
         if (userInDb != null) {
             userInDb.setUserName(user.getUserName());
             userInDb.setPassword(user.getPassword());
@@ -41,17 +43,5 @@ public class UserController {
         }
         return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
-
-    @DeleteMapping("/{userName}")
-    public ResponseEntity<?> deleteUser(@PathVariable String userName) {
-        User user = userService.findByUserName(userName);
-        if (user != null) {
-            userService.deleteUser(userName);
-            return new ResponseEntity<>("User deleted successfully", HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-    }
-
 }
 
