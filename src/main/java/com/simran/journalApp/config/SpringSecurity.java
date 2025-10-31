@@ -28,7 +28,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**", "/user/create-user").permitAll()
                         .requestMatchers("/journal/**", "/user/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                       .requestMatchers("/admin/**").hasRole("ADMIN")
                 )
                 .httpBasic(Customizer.withDefaults());
 
