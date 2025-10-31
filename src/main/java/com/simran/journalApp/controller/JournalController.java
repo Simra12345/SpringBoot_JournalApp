@@ -75,19 +75,19 @@ public class JournalController {
         }
     }
 
-  //  @PutMapping("/{userName}/{id}")
-   // public ResponseEntity<?> updateJournalEntry(
-         //   @PathVariable String userName,
-         //   @PathVariable ObjectId id,
-         //   @RequestBody Journal updatedEntry
- //   ) {
-       // try {
-          //  journalService.updateEntry(id, userName, updatedEntry);
-          //  return new ResponseEntity<>("Journal updated successfully", HttpStatus.OK);
-    //    } catch (Exception e) {
-       //     return new ResponseEntity<>("Error updating journal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-      //  }
-  //  }
+    @PutMapping("/{userName}/{id}")
+   public ResponseEntity<?> updateJournalEntry(
+          @PathVariable String userName,
+          @PathVariable ObjectId id,
+            @RequestBody Journal updatedEntry
+   ) {
+        try {
+            journalService.updateEntry(id, userName, updatedEntry);
+           return new ResponseEntity<>("Journal updated successfully", HttpStatus.OK);
+       } catch (Exception e) {
+         return new ResponseEntity<>("Error updating journal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+    }
 }
 
 

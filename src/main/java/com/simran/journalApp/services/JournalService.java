@@ -65,6 +65,41 @@ public class JournalService {
                 .findFirst()
                 .orElse(null);
     }
+    public Journal updateEntry(ObjectId id, String userName, Journal updatedEntry) {
+
+        User user = userService.findByUserName(userName);
+        if (user == null) {
+            throw new RuntimeException("User not found: " + userName);
+        }
+
+
+        Journal existingEntry = findByIdAndUserName(id, userName);
+        if (existingEntry == null) {
+            throw new RuntimeException("Journal not found for ID: " + id + " and user: " + userName);
+        }
+
+
+        if (updatedEntry.getTitle() != null && !updatedEntry.getTitle().isEmpty()) {
+            existingEntry.setTitle(updatedEntry.getTitle());
+        }
+
+        if (updatedEntry.getContent() != null && !updatedEntry.getContent().isEmpty()) {
+            existingEntry.setContent(updatedEntry.getContent());
+        }
+
+        existingEntry.setDate(LocalDateTime.now());
+
+
+        Journal saved = journalEntryRepository.save(existingEntry);
+
+
+        user.getJournalEntries().removeIf(j -> j.getId().equals(id));
+        user.getJournalEntries().add(saved);
+        userService.saveEntry(user);
+
+        return saved;
+    }
+
 
 
     // public void saveEntry(Journal journal, String userName) {
