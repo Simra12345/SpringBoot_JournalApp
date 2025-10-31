@@ -63,9 +63,11 @@ public class JournalController {
             return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @DeleteMapping("/{userName}/{id}")
-    public ResponseEntity<?> deleteJournalEntryById(@PathVariable String userName, @PathVariable ObjectId id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteJournalEntryById( @PathVariable ObjectId id) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userName = authentication.getName();
             journalService.deleteById(id, userName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
