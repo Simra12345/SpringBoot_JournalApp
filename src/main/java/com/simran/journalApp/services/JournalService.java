@@ -52,8 +52,22 @@ public class JournalService {
         userService.saveEntry(user);
         journalEntryRepository.deleteById(id);
     }
+    public Journal findByIdAndUserName(ObjectId id, String userName) {
+        User user = userService.findByUserName(userName);
+        if (user == null || user.getJournalEntries() == null) {
+            return null;
+        }
 
-   // public void saveEntry(Journal journal, String userName) {
+        // Find journal with matching ID inside the user's journal list
+        return user.getJournalEntries()
+                .stream()
+                .filter(journal -> journal.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    // public void saveEntry(Journal journal, String userName) {
        // journalEntryRepository.save(journal);
     }
 

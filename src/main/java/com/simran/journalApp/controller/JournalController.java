@@ -32,8 +32,8 @@ public class JournalController {
     }
 
 
-    @GetMapping("/my")
-    public ResponseEntity<?> getMyJournalEntries() {
+    @GetMapping("/my/{id}")
+    public ResponseEntity<?> getJournalById(@PathVariable ObjectId id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
 
@@ -42,12 +42,13 @@ public class JournalController {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
 
-        List<Journal> all = user.getJournalEntries();
-        if (all != null && !all.isEmpty()) {
-            return new ResponseEntity<>(all, HttpStatus.OK);
+        Journal journal = journalService.findByIdAndUserName(id, userName);
+        if (journal != null) {
+            return new ResponseEntity<>(journal, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No journal entries found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Journal not found", HttpStatus.NOT_FOUND);
     }
+
 
 
     @PostMapping
